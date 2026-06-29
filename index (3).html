@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linaci - Portal de Empleo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-dark-card: #1e293b;
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --text-light: #ffffff;
+            --text-muted: #94a3b8;
+            --bg-light-section: #f8fafc;
+            --border-dark: #334155;
+        }
+
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; }
+
+        nav {
+            background-color: rgba(15, 23, 42, 0.95);
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-dark);
+            position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px);
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; }
+        .logo span { color: var(--primary); }
+
+        .lang-switcher { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        .lang-btn {
+            background: transparent;
+            border: 1px solid var(--border-dark);
+            color: var(--text-muted);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lang-btn:hover, .lang-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(56,189,248,0.1); }
+
+        .hero-section {
+            padding: 40px 15px;
+            text-align: center;
+            background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.06), transparent 40%), #0f172a;
+        }
+
+        .hero-section h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 15px; letter-spacing: -1px; line-height: 1.2; }
+        .hero-section p { color: var(--text-muted); font-size: 1rem; max-width: 600px; margin: 0 auto 30px auto; }
+
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--bg-dark-card);
+            border: 1px solid var(--border-dark);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: left;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .section-title {
+            font-size: 1.1rem; font-weight: 700; color: var(--text-light);
+            margin-top: 30px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+        }
+        .section-title::before { content: ''; display: inline-block; width: 4px; height: 18px; background-color: var(--primary); border-radius: 2px; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .hero-section h1 { font-size: 1.8rem; }
+            .form-container { padding: 20px 15px; }
+            nav { padding: 14px 15px; }
+            .lang-switcher { gap: 4px; }
+            .lang-btn { padding: 4px 7px; font-size: 0.7rem; }
+        }
+
+        .field-group { display: flex; flex-direction: column; }
+        .full-width { grid-column: span 2; }
+        @media (max-width: 768px) { .full-width { grid-column: span 1; } }
+
+        label { font-size: 0.8rem; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        input, select, textarea {
+            background-color: #0f172a; border: 1px solid var(--border-dark);
+            border-radius: 8px; padding: 14px; font-size: 0.95rem; color: var(--text-light);
+            transition: all 0.2s; outline: none; width: 100%;
+        }
+        select option { background: #1e293b; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(56,189,248,0.2); }
+        input[disabled], select[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+        .phone-container { display: flex; gap: 10px; }
+        .phone-container select { width: 45%; }
+        .phone-container input { width: 55%; }
+
+        .otro-input { margin-top: 8px; display: none; }
+        .otro-input.visible { display: block; }
+
+        .estudios-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 768px) { .estudios-row { grid-template-columns: 1fr; } }
+
+        .help-cv-card {
+            background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.2);
+            padding: 20px; border-radius: 12px; display: flex; align-items: flex-start; gap: 15px; cursor: pointer; margin-top: 30px;
+        }
+        .help-cv-card input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; margin-top: 3px; flex-shrink: 0; }
+        .help-text h4 { font-size: 0.95rem; font-weight: 700; color: var(--text-light); margin-bottom: 4px; }
+        .help-text p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+        .btn-submit {
+            background-color: var(--primary); color: #0f172a; border: none; padding: 18px; font-size: 1rem; font-weight: 800;
+            border-radius: 8px; cursor: pointer; width: 100%; margin-top: 30px; text-transform: uppercase;
+            letter-spacing: 1px; box-shadow: 0 4px 15px rgba(56,189,248,0.3); transition: background 0.2s;
+        }
+        .btn-submit:hover { background-color: var(--primary-hover); }
+        .btn-submit:disabled { background-color: var(--border-dark); box-shadow: none; cursor: not-allowed; color: var(--text-muted); }
+
+        .info-section-light { background-color: var(--bg-light-section); color: #1e293b; padding: 50px 20px; text-align: center; margin-top: 60px; }
+        .info-section-light h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 30px; }
+        .benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1000px; margin: 0 auto; }
+        @media (max-width: 768px) { .benefits-grid { grid-template-columns: 1fr; } }
+
+        .benefit-card { background: var(--text-light); padding: 25px; border-radius: 12px; text-align: left; border: 1px solid #e2e8f0; }
+        .benefit-card .benefit-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+        .benefit-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: #0f172a; }
+        .benefit-card p { font-size: 0.85rem; color: #64748b; line-height: 1.5; }
+
+        .status-msg { display: none; text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 15px; }
+
+        /* ===== MULTI-STEP PROGRESS ===== */
+        .progress-bar-wrap {
+            display: flex; align-items: center; justify-content: center;
+            gap: 0; margin-bottom: 28px; padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-dark);
+        }
+        .step-item {
+            display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; position: relative;
+        }
+        .step-item:not(:last-child)::after {
+            content: ''; position: absolute; top: 14px; left: 55%; width: 90%;
+            height: 2px; background: var(--border-dark); z-index: 0;
+        }
+        .step-item.done:not(:last-child)::after { background: var(--primary); }
+        .step-circle {
+            width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border-dark);
+            background: var(--bg-dark-card); display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700; color: var(--text-muted); z-index: 1; position: relative;
+            transition: all 0.3s;
+        }
+        .step-item.active .step-circle { border-color: var(--primary); color: var(--primary); background: rgba(56,189,248,0.1); }
+        .step-item.done .step-circle { border-color: var(--primary); background: var(--primary); color: #0f172a; }
+        .step-label { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; text-align: center; }
+        .step-item.active .step-label { color: var(--primary); }
+        .step-item.done .step-label { color: var(--primary); }
+
+        .form-step { display: none; }
+        .form-step.active { display: block; }
+
+        .step-nav { display: flex; gap: 12px; margin-top: 24px; }
+        .btn-prev {
+            background: transparent; border: 1px solid var(--border-dark); color: var(--text-muted);
+            padding: 14px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; flex: 0 0 auto;
+        }
+        .btn-prev:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-next {
+            background-color: var(--primary); color: #0f172a; border: none; padding: 14px;
+            font-size: 0.95rem; font-weight: 800; border-radius: 8px; cursor: pointer; flex: 1;
+            text-transform: uppercase; letter-spacing: 1px; transition: background 0.2s;
+        }
+        .btn-next:hover { background-color: var(--primary-hover); }
+
+        /* ===== DRAG & DROP ===== */
+        .dropzone {
+            border: 2px dashed var(--border-dark); border-radius: 12px;
+            padding: 32px 20px; text-align: center; cursor: pointer;
+            transition: all 0.25s; background: rgba(56,189,248,0.02);
+            position: relative;
+        }
+        .dropzone:hover, .dropzone.dragover { border-color: var(--primary); background: rgba(56,189,248,0.06); }
+        .dropzone .dz-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+        .dropzone .dz-text { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+        .dropzone .dz-text span { color: var(--primary); font-weight: 600; text-decoration: underline; cursor: pointer; }
+        .dropzone .dz-filename { margin-top: 10px; font-size: 0.85rem; color: var(--primary); font-weight: 600; display: none; }
+        .dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+        /* ===== TERMS CHECKBOX ===== */
+        .terms-check-wrap {
+            display: flex; align-items: flex-start; gap: 12px;
+            background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.15);
+            border-radius: 10px; padding: 16px; margin-top: 20px;
+        }
+        .terms-check-wrap input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); margin-top: 2px; flex-shrink: 0; cursor: pointer; }
+        .terms-check-wrap label { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; cursor: pointer; }
+        .terms-check-wrap label a { color: var(--primary); text-decoration: underline; }
+
+        /* ===== MODAL T&C ===== */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            z-index: 9999; overflow-y: auto; padding: 20px;
+        }
+        .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+        .modal-box {
+            background: var(--bg-dark-card); border: 1px solid var(--border-dark);
+            border-radius: 16px; max-width: 720px; width: 100%; padding: 36px 32px;
+            margin: auto; position: relative;
+        }
+        .modal-box h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; color: var(--text-light); }
+        .modal-box .modal-close {
+            position: absolute; top: 16px; right: 20px; background: none;
+            border: none; color: var(--text-muted); font-size: 1.4rem; cursor: pointer;
+            line-height: 1; padding: 4px 8px; border-radius: 6px;
+        }
+        .modal-box .modal-close:hover { color: var(--text-light); background: var(--border-dark); }
+        .modal-content { margin-top: 20px; max-height: 60vh; overflow-y: auto; padding-right: 8px; }
+        .modal-content h3 { font-size: 0.95rem; font-weight: 700; color: var(--primary); margin: 20px 0 6px; }
+        .modal-content p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 8px; }
+        .modal-content::-webkit-scrollbar { width: 6px; }
+        .modal-content::-webkit-scrollbar-track { background: var(--bg-dark); border-radius: 3px; }
+        .modal-content::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 3px; }
+
+        /* ===== FOOTER ===== */
+        .site-footer {
+            background: #0a1020; border-top: 1px solid var(--border-dark);
+            padding: 36px 20px 24px; text-align: center; margin-top: 0;
+        }
+        .footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 16px; }
+        .footer-links a { color: var(--text-muted); font-size: 0.8rem; text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--primary); }
+        .footer-copy { font-size: 0.75rem; color: #4a5568; }
+
+        /* ===== DARK MODE TOGGLE ===== */
+        .theme-toggle {
+            background: transparent; border: 1px solid var(--border-dark); color: var(--text-muted);
+            padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; margin-left: 6px;
+        }
+        .theme-toggle:hover { border-color: var(--primary); color: var(--primary); background: rgba(56,189,248,0.1); }
+
+        /* ===== LIGHT MODE ===== */
+        body.light-mode {
+            --bg-dark: #f1f5f9; --bg-dark-card: #ffffff; --text-light: #0f172a;
+            --text-muted: #475569; --border-dark: #cbd5e1; --bg-light-section: #e2e8f0;
+        }
+        body.light-mode nav { background-color: rgba(241,245,249,0.97); }
+        body.light-mode input, body.light-mode select, body.light-mode textarea { background-color: #f8fafc; color: #0f172a; }
+        body.light-mode select option { background: #ffffff; color: #0f172a; }
+        body.light-mode .site-footer { background: #e2e8f0; }
+        body.light-mode .dropzone { background: rgba(56,189,248,0.03); }
+        body.light-mode .step-circle { background: #ffffff; }
+        body.light-mode .step-item.done .step-circle { background: var(--primary); color: #fff; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">🎯 Li<span>naci</span></div>
+    <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" onclick="setLang('pt')">PT</button>
+        <button class="lang-btn" onclick="setLang('fr')">FR</button>
+        <button class="lang-btn" onclick="setLang('de')">DE</button>
+        <button class="lang-btn" onclick="setLang('it')">IT</button>
+        <button class="lang-btn" onclick="setLang('ja')">日本語</button>
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Cambiar tema">☀️</button>
+    </div>
+</nav>
+
+<section class="hero-section">
+    <h1 data-i18n="hero_title">Te acompañamos en tu búsqueda de trabajo</h1>
+    <p data-i18n="hero_sub">Cargá tus datos, adjuntá tu CV y postulate para dar el salto profesional.</p>
+
+    <div class="form-container">
+        <!-- PROGRESS BAR -->
+        <div class="progress-bar-wrap">
+            <div class="step-item active" id="pi-1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Personal</div>
+            </div>
+            <div class="step-item" id="pi-2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Ubicación</div>
+            </div>
+            <div class="step-item" id="pi-3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Perfil</div>
+            </div>
+        </div>
+
+        <form id="cvForm">
+
+            <!-- PASO 1: DATOS PERSONALES -->
+            <div class="form-step active" id="step-1">
+            <div class="section-title" data-i18n="sec_personal">Datos Personales</div>
+            <div class="form-grid">
+                <div class="field-group">
+                    <label data-i18n="lbl_nombre">Nombre y Apellido *</label>
+                    <input type="text" id="nombre" required>
+                </div>
+                <div class="field-group">
+                    <label data-i18n="lbl_dni">DNI / Documento *</label>
+                    <input type="text" id="dni" required>
+                </div>
+                <div class="field-group">
+                    <label data-i18n="lbl_fnac">Fecha de Nacimiento *</label>
+                    <input type="date" id="fechaNacimiento" required>
+                </div>
+                <div class="field-group">
+                    <label data-i18n="lbl_sexo">Sexo *</label>
+                    <select id="sexo" required>
+                        <option value="" data-i18n="opt_sel">Seleccionar...</option>
+                        <option value="Femenino" data-i18n="opt_fem">Femenino</option>
+                        <option value="Masculino" data-i18n="opt_masc">Masculino</option>
+                        <option value="No binario" data-i18n="opt_nb">No binario</option>
+                        <option value="Prefiero no decir" data-i18n="opt_pnd">Prefiero no decir</option>
+                        <option value="Otro" data-i18n="opt_otro">Otro</option>
+                    </select>
+                    <input type="text" class="otro-input" id="sexo_otro" placeholder="Especificar..." data-i18n-ph="ph_especificar">
+                </div>
+                <div class="field-group full-width">
+                    <label data-i18n="lbl_nac">Nacionalidad *</label>
+                    <select id="nacionalidad" required onchange="updateProvincia()">
+                        <option value="" data-i18n="opt_sel">Seleccionar...</option>
+                    </select>
+                    <input type="text" class="otro-input" id="nacionalidad_otro" placeholder="Especificar país..." data-i18n-ph="ph_pais">
+                </div>
+            </div>
+
+            <div class="step-nav">
+                <button type="button" class="btn-next" onclick="goStep(2)">Siguiente →</button>
+            </div>
+            </div><!-- /step-1 -->
+
+            <!-- PASO 2: CONTACTO & UBICACIÓN -->
+            <div class="form-step" id="step-2">
+            <div class="section-title" data-i18n="sec_contacto">Contacto &amp; Ubicación</div>
+            <div class="form-grid">
+                <div class="field-group">
+                    <label data-i18n="lbl_tel">Teléfono *</label>
+                    <div class="phone-container">
+                        <select id="codPais" required></select>
+                        <input type="tel" id="numTel" placeholder="11 2345 6789" required>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label data-i18n="lbl_mail">Email *</label>
+                    <input type="email" id="mail" required>
+                </div>
+                <div class="field-group">
+                    <label data-i18n="lbl_prov">Provincia / Estado *</label>
+                    <select id="provincia" required onchange="updateLocalidad()" disabled>
+                        <option value="" data-i18n="opt_prov">Seleccionar país primero</option>
+                    </select>
+                    <input type="text" class="otro-input" id="provincia_otro" placeholder="Especificar..." data-i18n-ph="ph_especificar">
+                </div>
+                <div class="field-group">
+                    <label data-i18n="lbl_loc">Localidad / Barrio *</label>
+                    <select id="localidad" required disabled>
+                        <option value="" data-i18n="opt_loc">Seleccionar provincia primero</option>
+                    </select>
+                    <input type="text" class="otro-input" id="localidad_otro" placeholder="Especificar..." data-i18n-ph="ph_especificar">
+                </div>
+                <div class="field-group full-width">
+                    <label data-i18n="lbl_cp">Código Postal *</label>
+                    <input type="text" id="cp" required>
+                </div>
+            </div>
+
+            <div class="step-nav">
+                <button type="button" class="btn-prev" onclick="goStep(1)">← Anterior</button>
+                <button type="button" class="btn-next" onclick="goStep(3)">Siguiente →</button>
+            </div>
+            </div><!-- /step-2 -->
+
+            <!-- PASO 3: PERFIL PROFESIONAL -->
+            <div class="form-step" id="step-3">
+            <div class="section-title" data-i18n="sec_perfil">Perfil Profesional</div>
+            <div class="form-grid">
+                <div class="field-group">
+                    <label data-i18n="lbl_estudios">Nivel de Estudios *</label>
+                    <div class="estudios-row">
+                        <select id="estudios" required onchange="toggleOtro('estudios','estudios_otro'); updateUniversidades()">
+                            <option value="" data-i18n="opt_sel">Seleccionar...</option>
+                            <option value="Primario" data-i18n="opt_prim">Primario</option>
+                            <option value="Secundario" data-i18n="opt_sec">Secundario</option>
+                            <option value="Terciario" data-i18n="opt_terc">Terciario / Técnico</option>
+                            <option value="Universitario" data-i18n="opt_univ">Universitario</option>
+                            <option value="Posgrado" data-i18n="opt_pos">Posgrado / Especialización</option>
+                            <option value="Maestría" data-i18n="opt_maes">Maestría</option>
+                            <option value="Doctorado" data-i18n="opt_doc">Doctorado</option>
+                            <option value="Otro" data-i18n="opt_otro">Otro</option>
+                        </select>
+                        <select id="estadoEstudios" required onchange="toggleOtro('estadoEstudios','estadoEstudios_otro')">
+                            <option value="" data-i18n="opt_estado">Estado...</option>
+                            <option value="En curso" data-i18n="opt_encurso">En curso</option>
+                            <option value="Completo" data-i18n="opt_comp">Completo</option>
+                            <option value="Abandonado" data-i18n="opt_aban">Abandonado</option>
+                            <option value="En pausa" data-i18n="opt_pausa">En pausa</option>
+                            <option value="Otro" data-i18n="opt_otro">Otro</option>
+                        </select>
+                    </div>
+                    <input type="text" class="otro-input" id="estudios_otro" placeholder="Especificar nivel..." data-i18n-ph="ph_especificar">
+                    <input type="text" class="otro-input" id="estadoEstudios_otro" placeholder="Especificar estado..." data-i18n-ph="ph_especificar">
+                </div>
+                <div class="field-group" id="carreraGroup" style="display:none;">
+                    <label>Carrera</label>
+                    <select id="carreraCategoria" onchange="updateCarreraOpciones()">
+                        <option value="">Seleccionar área...</option>
+                        <option value="tech">Tecnología, Sistemas e Ingeniería</option>
+                        <option value="eco">Economía, Negocios y Legal</option>
+                        <option value="salud">Salud y Ciencias Biológicas</option>
+                        <option value="diseno">Comunicación, Diseño y Arquitectura</option>
+                        <option value="social">Ciencias Sociales y Educación</option>
+                        <option value="otra">Otra área</option>
+                    </select>
+                    <select id="carreraDetalle" style="margin-top:8px; display:none;" onchange="toggleOtro('carreraDetalle','carrera_otro')">
+                        <option value="">Seleccionar carrera...</option>
+                    </select>
+                    <input type="text" class="otro-input" id="carrera_otro" placeholder="Especificar carrera...">
+                </div>
+                <div class="field-group">
+                    <label data-i18n="lbl_univ">Universidad / Institución</label>
+                    <select id="universidad" onchange="toggleOtro('universidad','universidad_otro')" disabled>
+                        <option value="" data-i18n="opt_univ_sel">Seleccionar estudios primero</option>
+                    </select>
+                    <input type="text" class="otro-input" id="universidad_otro" placeholder="Especificar institución..." data-i18n-ph="ph_inst">
+                </div>
+                <div class="field-group">
+                    <label data-i18n="lbl_area">Área de Interés *</label>
+                    <select id="areaInteres" required onchange="toggleOtro('areaInteres','areaInteres_otro')">
+                        <option value="" data-i18n="opt_sel">Seleccionar...</option>
+                        <option value="Tecnología e IT">Tecnología e IT</option>
+                        <option value="Desarrollo de Software">Desarrollo de Software</option>
+                        <option value="Infraestructura y DevOps">Infraestructura y DevOps</option>
+                        <option value="Ciberseguridad">Ciberseguridad</option>
+                        <option value="Data & Analytics">Data &amp; Analytics</option>
+                        <option value="Inteligencia Artificial">Inteligencia Artificial</option>
+                        <option value="Marketing y Comunicación">Marketing y Comunicación</option>
+                        <option value="Recursos Humanos">Recursos Humanos</option>
+                        <option value="Finanzas y Contabilidad">Finanzas y Contabilidad</option>
+                        <option value="Ventas y Comercial">Ventas y Comercial</option>
+                        <option value="Operaciones y Logística">Operaciones y Logística</option>
+                        <option value="Legal y Compliance">Legal y Compliance</option>
+                        <option value="Diseño UX/UI">Diseño UX/UI</option>
+                        <option value="Diseño Gráfico">Diseño Gráfico</option>
+                        <option value="Atención al Cliente">Atención al Cliente</option>
+                        <option value="Administración y Back Office">Administración y Back Office</option>
+                        <option value="Gestión de Proyectos">Gestión de Proyectos</option>
+                        <option value="Investigación y Desarrollo">Investigación y Desarrollo</option>
+                        <option value="Salud y Bienestar">Salud y Bienestar</option>
+                        <option value="Educación y Capacitación">Educación y Capacitación</option>
+                        <option value="Compras y Abastecimiento">Compras y Abastecimiento</option>
+                        <option value="Producción e Industria">Producción e Industria</option>
+                        <option value="Otro" data-i18n="opt_otro">Otro</option>
+                    </select>
+                    <input type="text" class="otro-input" id="areaInteres_otro" placeholder="Especificar área..." data-i18n-ph="ph_especificar">
+                </div>
+                <div class="field-group">
+                    <label data-i18n="lbl_idiomas">Idiomas</label>
+                    <input type="text" id="idiomas" placeholder="Ej: Inglés B2, Portugués básico">
+                </div>
+                <div class="field-group full-width">
+                    <label data-i18n="lbl_exp">Experiencia Laboral</label>
+                    <textarea id="experiencia" rows="3"></textarea>
+                </div>
+                <div class="field-group">
+                    <label data-i18n="lbl_linkedin">LinkedIn</label>
+                    <input type="url" id="linkedin" placeholder="https://linkedin.com/in/...">
+                </div>
+                <div class="field-group full-width">
+                    <label data-i18n="lbl_sobre">Sobre Mí</label>
+                    <textarea id="sobreMi" rows="3"></textarea>
+                </div>
+                <div class="field-group full-width">
+                    <label data-i18n="lbl_cv">Adjuntar CV *</label>
+                    <div class="dropzone" id="dropzone">
+                        <input type="file" id="cvFile" accept=".pdf,.doc,.docx" required onchange="handleFileSelect(this)">
+                        <span class="dz-icon">📄</span>
+                        <div class="dz-text">Arrastrá tu CV aquí o <span>hacé clic para seleccionar</span><br><small>PDF, DOC o DOCX · máx. 5 MB</small></div>
+                        <div class="dz-filename" id="dzFilename"></div>
+                    </div>
+                </div>
+            </div>
+
+            <label class="help-cv-card" for="ayudaCv">
+                <input type="checkbox" id="ayudaCv">
+                <div class="help-text">
+                    <h4 data-i18n="help_title">Me gustaría que me ayuden a mejorar mi CV de manera gratuita.</h4>
+                    <p data-i18n="help_sub">Tildá esta opción si querés recibir sugerencias profesionales.</p>
+                </div>
+            </label>
+
+            <!-- TÉRMINOS Y CONDICIONES -->
+            <div class="terms-check-wrap">
+                <input type="checkbox" id="aceptoTerminos" required>
+                <label for="aceptoTerminos">
+                    He leído y acepto los <a href="#" onclick="openModal(event)">Términos y Condiciones</a> de Linaci, así como el tratamiento de mis datos personales conforme a la normativa argentina de protección de datos (Ley 25.326).
+                </label>
+            </div>
+
+            <div class="step-nav">
+                <button type="button" class="btn-prev" onclick="goStep(2)">← Anterior</button>
+                <button type="submit" class="btn-submit" id="submitBtn" data-i18n="btn_enviar" style="margin-top:0;">Enviar Postulación</button>
+            </div>
+            <div class="status-msg" id="loadingMsg" data-i18n="loading">Subiendo CV... Por favor, no cierres la página.</div>
+            </div><!-- /step-3 -->
+        </form>
+    </div>
+</section>
+
+<section class="info-section-light">
+    <h2 data-i18n="why_title">¿Por qué elegir Linaci?</h2>
+    <div class="benefits-grid">
+        <div class="benefit-card">
+            <span class="benefit-icon">🏆</span>
+            <h3 data-i18n="b1_title">Experimentados</h3>
+            <p data-i18n="b1_sub">Sabemos lo que las empresas buscan.</p>
+        </div>
+        <div class="benefit-card">
+            <span class="benefit-icon">🔍</span>
+            <h3 data-i18n="b2_title">Transparentes</h3>
+            <p data-i18n="b2_sub">Priorizamos la transparencia mutua.</p>
+        </div>
+        <div class="benefit-card">
+            <span class="benefit-icon">🤝</span>
+            <h3 data-i18n="b3_title">Dedicados</h3>
+            <p data-i18n="b3_sub">Buscamos el match perfecto para tu talento.</p>
+        </div>
+    </div>
+</section>
+
+<!-- MODAL TÉRMINOS Y CONDICIONES -->
+<div class="modal-overlay" id="tcModal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h2>⚖️ Términos y Condiciones de Uso</h2>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Linaci · Última actualización: 2025</p>
+        <div class="modal-content">
+            <p>Las presentes condiciones de uso informan sobre las normas de uso del sitio web operado por <strong>Linaci</strong> (en lo sucesivo, «Linaci», «nosotros» o «nos»), incluido el contenido disponible a través de este sitio web (el «Sitio web»).</p>
+            <h3>1. Aceptación de estos Términos de Uso</h3>
+            <p>Al utilizar el Sitio Web, usted confirma que acepta las Condiciones de Uso vigentes en el momento de su visita y se compromete a cumplirlas. Si no está de acuerdo, no debe utilizar nuestro sitio web.</p>
+            <p>El contenido puede estar regido por condiciones particulares adicionales. En caso de conflicto, las Condiciones Particulares prevalecerán sobre las presentes.</p>
+            <h3>2. Acceso al sitio web</h3>
+            <p>El acceso está permitido de forma temporal. Nos reservamos el derecho de retirar o modificar el contenido sin previo aviso. No garantizamos un acceso continuo, ininterrumpido y seguro, ni que el sitio esté libre de errores o virus.</p>
+            <h3>3. Uso del sitio web</h3>
+            <p>Usted es el único responsable del uso que haga del sitio web. Al acceder, se compromete a no realizar actos que puedan dañar nuestra imagen, intereses o los de las Empresas del Grupo Linaci, ni dañar o sobrecargar el Sitio Web.</p>
+            <p>No debe introducir virus, troyanos, gusanos u otro material malicioso, ni intentar acceso no autorizado a nuestros servidores. Informaremos cualquier infracción a las autoridades pertinentes.</p>
+            <h3>4. Contenido</h3>
+            <p>No garantizamos la utilidad, precisión o integridad del Contenido. La inclusión del Contenido no constituye la prestación de servicios de contratación de personal. Linaci excluye toda responsabilidad por las decisiones tomadas en base al Contenido.</p>
+            <h3>5. Ninguna relación comercial u oferta de inversión</h3>
+            <p>El sitio no pretende establecer una relación comercial entre usted y nosotros, ni constituye una oferta o solicitud de compra de valores de Linaci.</p>
+            <h3>6. Derechos de propiedad intelectual</h3>
+            <p>Todo el contenido del sitio web es de nuestra propiedad o cuenta con licencia de uso, protegido por derechos de autor, marcas comerciales y otras leyes de propiedad intelectual vigentes a nivel mundial. Queda expresamente prohibida cualquier reproducción, distribución o uso no autorizado del Contenido.</p>
+            <h3>7. Enlaces</h3>
+            <p>Los enlaces a sitios de terceros se proporcionan solo para información y no implican aprobación por nuestra parte. No tenemos control sobre su contenido. No debe establecer enlaces a nuestro sitio sin autorización previa por escrito.</p>
+            <h3>8. Información personal</h3>
+            <p>Sus datos personales son tratados conforme a la <strong>Ley 25.326 de Protección de Datos Personales</strong> de la República Argentina. Para más información, consulte nuestro Aviso de Privacidad.</p>
+            <h3>9. Ausencia de garantías y limitación de responsabilidad</h3>
+            <p>El Contenido se proporciona únicamente para información general. No somos responsables de pérdidas indirectas o consecuentes, como pérdida de uso, interrupción del negocio, pérdida de beneficios o de datos.</p>
+            <h3>10. Ley aplicable y jurisdicción</h3>
+            <p>Estas Condiciones se rigen por las leyes de la <strong>República Argentina</strong> y están sujetas a la jurisdicción de los tribunales competentes de la <strong>Ciudad Autónoma de Buenos Aires</strong>.</p>
+            <h3>11. Modificaciones</h3>
+            <p>Podemos actualizar estos Términos de uso periódicamente. Le notificaremos cualquier cambio relevante si es usuario registrado.</p>
+            <h3>12. Contacto</h3>
+            <p>Consultas y solicitudes: <a href="mailto:rrhh.linaci@gmail.com" style="color:var(--primary);">rrhh.linaci@gmail.com</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER INSTITUCIONAL -->
+<footer class="site-footer">
+    <div class="footer-links">
+        <a href="#" onclick="openModal(event)">Términos y Condiciones</a>
+        <a href="mailto:rrhh.linaci@gmail.com">Política de Privacidad</a>
+        <a href="mailto:rrhh.linaci@gmail.com">Contacto</a>
+        <a href="https://www.linkedin.com/company/linaci" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <p class="footer-copy">© 2025 Linaci · Todos los derechos reservados · Buenos Aires, Argentina</p>
+</footer>
+
+<script>
+// ======== TRANSLATIONS ========
+const i18n = {
+    es: {
+        hero_title: "Te acompañamos en tu búsqueda de trabajo",
+        hero_sub: "Cargá tus datos, adjuntá tu CV y postulate para dar el salto profesional.",
+        sec_personal: "Datos Personales", sec_contacto: "Contacto & Ubicación", sec_perfil: "Perfil Profesional",
+        lbl_nombre: "Nombre y Apellido *", lbl_dni: "DNI / Documento *", lbl_fnac: "Fecha de Nacimiento *",
+        lbl_sexo: "Sexo *", lbl_nac: "Nacionalidad *", lbl_tel: "Teléfono *", lbl_mail: "Email *",
+        lbl_prov: "Provincia / Estado *", lbl_loc: "Localidad / Barrio *", lbl_cp: "Código Postal *",
+        lbl_estudios: "Nivel de Estudios *", lbl_univ: "Universidad / Institución", lbl_area: "Área de Interés *",
+        lbl_idiomas: "Idiomas", lbl_exp: "Experiencia Laboral", lbl_linkedin: "LinkedIn",
+        lbl_sobre: "Sobre Mí", lbl_cv: "Adjuntar CV *",
+        opt_sel: "Seleccionar...", opt_fem: "Femenino", opt_masc: "Masculino", opt_nb: "No binario",
+        opt_pnd: "Prefiero no decir", opt_otro: "Otro", opt_estado: "Estado...",
+        opt_encurso: "En curso", opt_comp: "Completo", opt_aban: "Abandonado", opt_pausa: "En pausa",
+        opt_prim: "Primario", opt_sec: "Secundario", opt_terc: "Terciario / Técnico",
+        opt_univ: "Universitario", opt_pos: "Posgrado / Especialización", opt_maes: "Maestría", opt_doc: "Doctorado",
+        opt_prov: "Seleccionar país primero", opt_loc: "Seleccionar provincia primero", opt_univ_sel: "Seleccionar estudios primero",
+        ph_especificar: "Especificar...", ph_pais: "Especificar país...", ph_inst: "Especificar institución...",
+        help_title: "Me gustaría que me ayuden a mejorar mi CV de manera gratuita.",
+        help_sub: "Tildá esta opción si querés recibir sugerencias profesionales.",
+        btn_enviar: "Enviar Postulación", loading: "Subiendo CV... Por favor, no cierres la página.",
+        why_title: "¿Por qué elegir Linaci?",
+        b1_title: "Experimentados", b1_sub: "Sabemos lo que las empresas buscan.",
+        b2_title: "Transparentes", b2_sub: "Priorizamos la transparencia mutua.",
+        b3_title: "Dedicados", b3_sub: "Buscamos el match perfecto para tu talento.",
+        success_msg: "¡Postulación cargada con éxito!", error_msg: "Error al enviar. Intentá de nuevo."
+    },
+    pt: {
+        hero_title: "Te acompanhamos na sua busca de emprego",
+        hero_sub: "Preencha seus dados, anexe seu currículo e candidate-se para dar o salto profissional.",
+        sec_personal: "Dados Pessoais", sec_contacto: "Contato & Localização", sec_perfil: "Perfil Profissional",
+        lbl_nombre: "Nome Completo *", lbl_dni: "CPF / Documento *", lbl_fnac: "Data de Nascimento *",
+        lbl_sexo: "Sexo *", lbl_nac: "Nacionalidade *", lbl_tel: "Telefone *", lbl_mail: "E-mail *",
+        lbl_prov: "Estado / Província *", lbl_loc: "Cidade / Bairro *", lbl_cp: "CEP *",
+        lbl_estudios: "Nível de Escolaridade *", lbl_univ: "Universidade / Instituição", lbl_area: "Área de Interesse *",
+        lbl_idiomas: "Idiomas", lbl_exp: "Experiência Profissional", lbl_linkedin: "LinkedIn",
+        lbl_sobre: "Sobre Mim", lbl_cv: "Anexar Currículo *",
+        opt_sel: "Selecionar...", opt_fem: "Feminino", opt_masc: "Masculino", opt_nb: "Não binário",
+        opt_pnd: "Prefiro não dizer", opt_outro: "Outro", opt_estado: "Status...",
+        opt_encurso: "Em andamento", opt_comp: "Completo", opt_aban: "Abandonado", opt_pausa: "Em pausa",
+        opt_prim: "Ensino Fundamental", opt_sec: "Ensino Médio", opt_terc: "Técnico / Superior de Tecnologia",
+        opt_univ: "Graduação", opt_pos: "Pós-graduação / Especialização", opt_maes: "Mestrado", opt_doc: "Doutorado",
+        opt_prov: "Selecione o país primeiro", opt_loc: "Selecione o estado primeiro", opt_univ_sel: "Selecione a escolaridade primeiro",
+        ph_especificar: "Especificar...", ph_pais: "Especificar país...", ph_inst: "Especificar instituição...",
+        opt_otro: "Outro",
+        help_title: "Gostaria de receber ajuda gratuita para melhorar meu currículo.",
+        help_sub: "Marque esta opção se quiser receber sugestões profissionais.",
+        btn_enviar: "Enviar Candidatura", loading: "Enviando currículo... Por favor, não feche a página.",
+        why_title: "Por que escolher Linaci?",
+        b1_title: "Experientes", b1_sub: "Sabemos o que as empresas procuram.",
+        b2_title: "Transparentes", b2_sub: "Priorizamos a transparência mútua.",
+        b3_title: "Dedicados", b3_sub: "Buscamos o match perfeito para o seu talento.",
+        success_msg: "Candidatura enviada com sucesso!", error_msg: "Erro ao enviar. Tente novamente."
+    },
+    fr: {
+        hero_title: "Nous vous accompagnons dans votre recherche d'emploi",
+        hero_sub: "Renseignez vos informations, joignez votre CV et postulez pour faire le grand saut professionnel.",
+        sec_personal: "Données Personnelles", sec_contacto: "Contact & Localisation", sec_perfil: "Profil Professionnel",
+        lbl_nombre: "Nom et Prénom *", lbl_dni: "Pièce d'identité *", lbl_fnac: "Date de naissance *",
+        lbl_sexo: "Sexe *", lbl_nac: "Nationalité *", lbl_tel: "Téléphone *", lbl_mail: "E-mail *",
+        lbl_prov: "Région / Province *", lbl_loc: "Ville / Quartier *", lbl_cp: "Code Postal *",
+        lbl_estudios: "Niveau d'études *", lbl_univ: "Université / Établissement", lbl_area: "Domaine d'intérêt *",
+        lbl_idiomas: "Langues", lbl_exp: "Expérience professionnelle", lbl_linkedin: "LinkedIn",
+        lbl_sobre: "À propos de moi", lbl_cv: "Joindre le CV *",
+        opt_sel: "Sélectionner...", opt_fem: "Féminin", opt_masc: "Masculin", opt_nb: "Non binaire",
+        opt_pnd: "Préfère ne pas dire", opt_otro: "Autre", opt_estado: "Statut...",
+        opt_encurso: "En cours", opt_comp: "Terminé", opt_aban: "Abandonné", opt_pausa: "En pause",
+        opt_prim: "Primaire", opt_sec: "Secondaire", opt_terc: "Bac +2 / BTS",
+        opt_univ: "Licence / Bachelor", opt_pos: "Master spécialisé", opt_maes: "Master", opt_doc: "Doctorat",
+        opt_prov: "Sélectionner le pays d'abord", opt_loc: "Sélectionner la région d'abord", opt_univ_sel: "Sélectionner le niveau d'abord",
+        ph_especificar: "Préciser...", ph_pais: "Préciser le pays...", ph_inst: "Préciser l'établissement...",
+        help_title: "Je souhaite recevoir gratuitement de l'aide pour améliorer mon CV.",
+        help_sub: "Cochez cette option si vous souhaitez recevoir des suggestions professionnelles.",
+        btn_enviar: "Envoyer ma candidature", loading: "Envoi du CV en cours... Merci de ne pas fermer la page.",
+        why_title: "Pourquoi choisir Linaci ?",
+        b1_title: "Expérimentés", b1_sub: "Nous savons ce que les entreprises recherchent.",
+        b2_title: "Transparents", b2_sub: "Nous privilégions la transparence mutuelle.",
+        b3_title: "Dédiés", b3_sub: "Nous cherchons le parfait match pour votre talent.",
+        success_msg: "Candidature envoyée avec succès !", error_msg: "Erreur lors de l'envoi. Veuillez réessayer."
+    },
+    de: {
+        hero_title: "Wir begleiten Sie bei Ihrer Jobsuche",
+        hero_sub: "Geben Sie Ihre Daten ein, fügen Sie Ihren Lebenslauf bei und bewerben Sie sich für Ihren nächsten Karriereschritt.",
+        sec_personal: "Persönliche Daten", sec_contacto: "Kontakt & Standort", sec_perfil: "Berufliches Profil",
+        lbl_nombre: "Vor- und Nachname *", lbl_dni: "Ausweis / Personalausweis *", lbl_fnac: "Geburtsdatum *",
+        lbl_sexo: "Geschlecht *", lbl_nac: "Nationalität *", lbl_tel: "Telefon *", lbl_mail: "E-Mail *",
+        lbl_prov: "Bundesland / Provinz *", lbl_loc: "Stadt / Bezirk *", lbl_cp: "Postleitzahl *",
+        lbl_estudios: "Bildungsabschluss *", lbl_univ: "Universität / Einrichtung", lbl_area: "Interessensbereich *",
+        lbl_idiomas: "Sprachen", lbl_exp: "Berufserfahrung", lbl_linkedin: "LinkedIn",
+        lbl_sobre: "Über mich", lbl_cv: "Lebenslauf anhängen *",
+        opt_sel: "Auswählen...", opt_fem: "Weiblich", opt_masc: "Männlich", opt_nb: "Nicht-binär",
+        opt_pnd: "Keine Angabe", opt_otro: "Sonstiges", opt_estado: "Status...",
+        opt_encurso: "Laufend", opt_comp: "Abgeschlossen", opt_aban: "Abgebrochen", opt_pausa: "Pausiert",
+        opt_prim: "Grundschule", opt_sec: "Gymnasium / Realschule", opt_terc: "Berufsschule / Fachhochschule",
+        opt_univ: "Bachelor / Universität", opt_pos: "Spezialisierung / Zertifikat", opt_maes: "Master", opt_doc: "Doktorat",
+        opt_prov: "Zuerst Land auswählen", opt_loc: "Zuerst Bundesland auswählen", opt_univ_sel: "Zuerst Bildungsgrad auswählen",
+        ph_especificar: "Angeben...", ph_pais: "Land angeben...", ph_inst: "Einrichtung angeben...",
+        help_title: "Ich möchte kostenlose Hilfe bei der Verbesserung meines Lebenslaufs.",
+        help_sub: "Wählen Sie diese Option, wenn Sie professionelle Vorschläge erhalten möchten.",
+        btn_enviar: "Bewerbung absenden", loading: "Lebenslauf wird hochgeladen... Bitte Seite nicht schließen.",
+        why_title: "Warum Linaci wählen?",
+        b1_title: "Erfahren", b1_sub: "Wir wissen, was Unternehmen suchen.",
+        b2_title: "Transparent", b2_sub: "Wir priorisieren gegenseitige Transparenz.",
+        b3_title: "Engagiert", b3_sub: "Wir suchen die perfekte Übereinstimmung für Ihr Talent.",
+        success_msg: "Bewerbung erfolgreich eingereicht!", error_msg: "Fehler beim Senden. Bitte erneut versuchen."
+    },
+    it: {
+        hero_title: "Ti accompagniamo nella tua ricerca di lavoro",
+        hero_sub: "Inserisci i tuoi dati, allega il tuo CV e candidati per fare il salto professionale.",
+        sec_personal: "Dati Personali", sec_contacto: "Contatto & Posizione", sec_perfil: "Profilo Professionale",
+        lbl_nombre: "Nome e Cognome *", lbl_dni: "Carta d'identità *", lbl_fnac: "Data di nascita *",
+        lbl_sexo: "Sesso *", lbl_nac: "Nazionalità *", lbl_tel: "Telefono *", lbl_mail: "E-mail *",
+        lbl_prov: "Regione / Provincia *", lbl_loc: "Città / Quartiere *", lbl_cp: "CAP *",
+        lbl_estudios: "Livello di istruzione *", lbl_univ: "Università / Istituzione", lbl_area: "Area di interesse *",
+        lbl_idiomas: "Lingue", lbl_exp: "Esperienza lavorativa", lbl_linkedin: "LinkedIn",
+        lbl_sobre: "Su di me", lbl_cv: "Allega il CV *",
+        opt_sel: "Selezionare...", opt_fem: "Femminile", opt_masc: "Maschile", opt_nb: "Non binario",
+        opt_pnd: "Preferisco non dire", opt_otro: "Altro", opt_estado: "Stato...",
+        opt_encurso: "In corso", opt_comp: "Completato", opt_aban: "Abbandonato", opt_pausa: "In pausa",
+        opt_prim: "Scuola elementare", opt_sec: "Scuola superiore", opt_terc: "Diploma tecnico / IFTS",
+        opt_univ: "Laurea triennale", opt_pos: "Specializzazione / Master I livello", opt_maes: "Master II livello", opt_doc: "Dottorato",
+        opt_prov: "Selezionare prima il paese", opt_loc: "Selezionare prima la regione", opt_univ_sel: "Selezionare prima il livello",
+        ph_especificar: "Specificare...", ph_pais: "Specificare paese...", ph_inst: "Specificare istituzione...",
+        help_title: "Vorrei ricevere gratuitamente aiuto per migliorare il mio CV.",
+        help_sub: "Seleziona questa opzione se vuoi ricevere suggerimenti professionali.",
+        btn_enviar: "Invia candidatura", loading: "Caricamento CV in corso... Non chiudere la pagina.",
+        why_title: "Perché scegliere Linaci?",
+        b1_title: "Esperti", b1_sub: "Sappiamo cosa cercano le aziende.",
+        b2_title: "Trasparenti", b2_sub: "Priorità alla trasparenza reciproca.",
+        b3_title: "Dedicati", b3_sub: "Cerchiamo il match perfetto per il tuo talento.",
+        success_msg: "Candidatura inviata con successo!", error_msg: "Errore nell'invio. Riprova."
+    },
+    ja: {
+        hero_title: "あなたの就職活動に寄り添います",
+        hero_sub: "情報を入力し、履歴書を添付して、キャリアアップへの第一歩を踏み出しましょう。",
+        sec_personal: "個人情報", sec_contacto: "連絡先・所在地", sec_perfil: "職業プロフィール",
+        lbl_nombre: "氏名 *", lbl_dni: "身分証明書番号 *", lbl_fnac: "生年月日 *",
+        lbl_sexo: "性別 *", lbl_nac: "国籍 *", lbl_tel: "電話番号 *", lbl_mail: "メールアドレス *",
+        lbl_prov: "都道府県 / 州 *", lbl_loc: "市区町村 *", lbl_cp: "郵便番号 *",
+        lbl_estudios: "学歴 *", lbl_univ: "大学 / 機関", lbl_area: "希望職種 *",
+        lbl_idiomas: "言語", lbl_exp: "職務経歴", lbl_linkedin: "LinkedIn",
+        lbl_sobre: "自己紹介", lbl_cv: "履歴書を添付 *",
+        opt_sel: "選択してください...", opt_fem: "女性", opt_masc: "男性", opt_nb: "ノンバイナリー",
+        opt_pnd: "回答しない", opt_otro: "その他", opt_estado: "状態...",
+        opt_encurso: "在学中", opt_comp: "修了", opt_aban: "中退", opt_pausa: "休学中",
+        opt_prim: "小学校", opt_sec: "中学・高校", opt_terc: "専門学校・短大",
+        opt_univ: "大学（学部）", opt_pos: "大学院（専門職）", opt_maes: "修士", opt_doc: "博士",
+        opt_prov: "先に国を選択してください", opt_loc: "先に都道府県を選択してください", opt_univ_sel: "先に学歴を選択してください",
+        ph_especificar: "入力してください...", ph_pais: "国を入力してください...", ph_inst: "機関名を入力してください...",
+        help_title: "無料でCVの改善サポートを希望します。",
+        help_sub: "プロのアドバイスを受けたい方はチェックしてください。",
+        btn_enviar: "応募を送信する", loading: "履歴書をアップロード中... ページを閉じないでください。",
+        why_title: "なぜLinaciを選ぶのか？",
+        b1_title: "経験豊富", b1_sub: "企業が何を求めているかを熟知しています。",
+        b2_title: "誠実", b2_sub: "相互の透明性を最優先にしています。",
+        b3_title: "献身的", b3_sub: "あなたの才能に最適なマッチングを追求します。",
+        success_msg: "応募が完了しました！", error_msg: "送信中にエラーが発生しました。もう一度お試しください。"
+    }
+};
+
+let currentLang = 'es';
+
+function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.lang-btn').forEach(b => { if(b.textContent.trim() === {es:'ES',pt:'PT',fr:'FR',de:'DE',it:'IT',ja:'日本語'}[lang]) b.classList.add('active'); });
+    const t = i18n[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if(t[key]) el.textContent = t[key];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if(t[key]) el.placeholder = t[key];
+    });
+}
+
+// ======== COUNTRY DATA ========
+const countries = [
+    {name:"Afghanistan",code:"+93"},{name:"Albania",code:"+355"},{name:"Alemania",code:"+49"},{name:"Algeria",code:"+213"},
+    {name:"Andorra",code:"+376"},{name:"Angola",code:"+244"},{name:"Antigua y Barbuda",code:"+1268"},{name:"Arabia Saudita",code:"+966"},
+    {name:"Argentina",code:"+54"},{name:"Armenia",code:"+374"},{name:"Australia",code:"+61"},{name:"Austria",code:"+43"},
+    {name:"Azerbaiyán",code:"+994"},{name:"Bahamas",code:"+1242"},{name:"Bangladés",code:"+880"},{name:"Bélgica",code:"+32"},
+    {name:"Belice",code:"+501"},{name:"Bolivia",code:"+591"},{name:"Bosnia y Herzegovina",code:"+387"},{name:"Brasil",code:"+55"},
+    {name:"Bulgaria",code:"+359"},{name:"Camerún",code:"+237"},{name:"Canadá",code:"+1"},{name:"Chile",code:"+56"},
+    {name:"China",code:"+86"},{name:"Colombia",code:"+57"},{name:"Congo",code:"+242"},{name:"Corea del Sur",code:"+82"},
+    {name:"Costa Rica",code:"+506"},{name:"Croacia",code:"+385"},{name:"Cuba",code:"+53"},{name:"Dinamarca",code:"+45"},
+    {name:"Ecuador",code:"+593"},{name:"Egipto",code:"+20"},{name:"El Salvador",code:"+503"},{name:"Emiratos Árabes",code:"+971"},
+    {name:"Eslovaquia",code:"+421"},{name:"Eslovenia",code:"+386"},{name:"España",code:"+34"},{name:"Estados Unidos",code:"+1"},
+    {name:"Estonia",code:"+372"},{name:"Etiopía",code:"+251"},{name:"Filipinas",code:"+63"},{name:"Finlandia",code:"+358"},
+    {name:"Francia",code:"+33"},{name:"Ghana",code:"+233"},{name:"Grecia",code:"+30"},{name:"Guatemala",code:"+502"},
+    {name:"Honduras",code:"+504"},{name:"Hungría",code:"+36"},{name:"India",code:"+91"},{name:"Indonesia",code:"+62"},
+    {name:"Irlanda",code:"+353"},{name:"Israel",code:"+972"},{name:"Italia",code:"+39"},{name:"Jamaica",code:"+1876"},
+    {name:"Japón",code:"+81"},{name:"Jordania",code:"+962"},{name:"Kazajistán",code:"+7"},{name:"Kenia",code:"+254"},
+    {name:"Kuwait",code:"+965"},{name:"Letonia",code:"+371"},{name:"Líbano",code:"+961"},{name:"Lituania",code:"+370"},
+    {name:"Luxemburgo",code:"+352"},{name:"Malasia",code:"+60"},{name:"Malta",code:"+356"},{name:"Marruecos",code:"+212"},
+    {name:"México",code:"+52"},{name:"Moldova",code:"+373"},{name:"Mónaco",code:"+377"},{name:"Mongolia",code:"+976"},
+    {name:"Nicaragua",code:"+505"},{name:"Nigeria",code:"+234"},{name:"Noruega",code:"+47"},{name:"Nueva Zelanda",code:"+64"},
+    {name:"Países Bajos",code:"+31"},{name:"Pakistán",code:"+92"},{name:"Panamá",code:"+507"},{name:"Paraguay",code:"+595"},
+    {name:"Perú",code:"+51"},{name:"Polonia",code:"+48"},{name:"Portugal",code:"+351"},{name:"Puerto Rico",code:"+1787"},
+    {name:"Qatar",code:"+974"},{name:"Reino Unido",code:"+44"},{name:"República Checa",code:"+420"},{name:"República Dominicana",code:"+1809"},
+    {name:"Rumania",code:"+40"},{name:"Rusia",code:"+7"},{name:"Serbia",code:"+381"},{name:"Singapur",code:"+65"},
+    {name:"Sudáfrica",code:"+27"},{name:"Suecia",code:"+46"},{name:"Suiza",code:"+41"},{name:"Tailandia",code:"+66"},
+    {name:"Taiwán",code:"+886"},{name:"Turquía",code:"+90"},{name:"Ucrania",code:"+380"},{name:"Uganda",code:"+256"},
+    {name:"Uruguay",code:"+598"},{name:"Venezuela",code:"+58"},{name:"Vietnam",code:"+84"}
+];
+
+// ======== PROVINCES BY COUNTRY ========
+const provincesByCountry = {
+    "Argentina": ["Buenos Aires","CABA","Catamarca","Chaco","Chubut","Córdoba","Corrientes","Entre Ríos","Formosa","Jujuy","La Pampa","La Rioja","Mendoza","Misiones","Neuquén","Río Negro","Salta","San Juan","San Luis","Santa Cruz","Santa Fe","Santiago del Estero","Tierra del Fuego","Tucumán","Otro"],
+    "Brasil": ["Acre","Alagoas","Amapá","Amazonas","Bahia","Ceará","Distrito Federal","Espírito Santo","Goiás","Maranhão","Mato Grosso","Mato Grosso do Sul","Minas Gerais","Pará","Paraíba","Paraná","Pernambuco","Piauí","Rio de Janeiro","Rio Grande do Norte","Rio Grande do Sul","Rondônia","Roraima","Santa Catarina","São Paulo","Sergipe","Tocantins","Outro"],
+    "Chile": ["Arica y Parinacota","Tarapacá","Antofagasta","Atacama","Coquimbo","Valparaíso","Metropolitana","O'Higgins","Maule","Ñuble","Biobío","La Araucanía","Los Ríos","Los Lagos","Aysén","Magallanes","Otro"],
+    "Uruguay": ["Artigas","Canelones","Cerro Largo","Colonia","Durazno","Flores","Florida","Lavalleja","Maldonado","Montevideo","Paysandú","Río Negro","Rivera","Rocha","Salto","San José","Soriano","Tacuarembó","Treinta y Tres","Otro"],
+    "México": ["Aguascalientes","Baja California","Baja California Sur","Campeche","Chiapas","Chihuahua","Ciudad de México","Coahuila","Colima","Durango","Estado de México","Guanajuato","Guerrero","Hidalgo","Jalisco","Michoacán","Morelos","Nayarit","Nuevo León","Oaxaca","Puebla","Querétaro","Quintana Roo","San Luis Potosí","Sinaloa","Sonora","Tabasco","Tamaulipas","Tlaxcala","Veracruz","Yucatán","Zacatecas","Otro"],
+    "Colombia": ["Amazonas","Antioquia","Arauca","Atlántico","Bolívar","Boyacá","Caldas","Caquetá","Casanare","Cauca","Cesar","Chocó","Córdoba","Cundinamarca","Guainía","Guaviare","Huila","La Guajira","Magdalena","Meta","Nariño","Norte de Santander","Putumayo","Quindío","Risaralda","San Andrés","Santander","Sucre","Tolima","Valle del Cauca","Vaupés","Vichada","Bogotá D.C.","Otro"],
+    "España": ["Álava","Albacete","Alicante","Almería","Asturias","Ávila","Badajoz","Barcelona","Burgos","Cáceres","Cádiz","Cantabria","Castellón","Ciudad Real","Córdoba","Cuenca","Gerona","Granada","Guadalajara","Guipúzcoa","Huelva","Huesca","Islas Baleares","Jaén","La Coruña","La Rioja","Las Palmas","León","Lérida","Lugo","Madrid","Málaga","Murcia","Navarra","Orense","Palencia","Pontevedra","Salamanca","Santa Cruz de Tenerife","Segovia","Sevilla","Soria","Tarragona","Teruel","Toledo","Valencia","Valladolid","Vizcaya","Zamora","Zaragoza","Ceuta","Melilla","Otro"],
+    "Estados Unidos": ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming","District of Columbia","Other"],
+    "Perú": ["Amazonas","Áncash","Apurímac","Arequipa","Ayacucho","Cajamarca","Callao","Cusco","Huancavelica","Huánuco","Ica","Junín","La Libertad","Lambayeque","Lima","Loreto","Madre de Dios","Moquegua","Pasco","Piura","Puno","San Martín","Tacna","Tumbes","Ucayali","Otro"],
+    "Venezuela": ["Amazonas","Anzoátegui","Apure","Aragua","Barinas","Bolívar","Carabobo","Cojedes","Delta Amacuro","Distrito Capital","Falcón","Guárico","Lara","Mérida","Miranda","Monagas","Nueva Esparta","Portuguesa","Sucre","Táchira","Trujillo","Vargas","Yaracuy","Zulia","Otro"]
+};
+
+// ======== LOCALITIES BY PROVINCE ========
+const localitiesByProvince = {
+    "Buenos Aires": ["Almirante Brown","Avellaneda","Bahía Blanca","Berazategui","Berisso","Bolívar","Brandsen","Campana","Cañuelas","Capitán Sarmiento","Carlos Casares","Carlos Tejedor","Carmen de Areco","Chacabuco","Chascomús","Chivilcoy","Daireaux","Dolores","Ensenada","Escobar","Esteban Echeverría","Exaltación de la Cruz","Ezeiza","Florencio Varela","General Alvarado","General Alvear","General Belgrano","General Guido","General Juan Madariaga","General La Madrid","General Las Heras","General Lavalle","General Paz","General Pueyrredón","General Rodríguez","General San Martín","General Viamonte","General Villegas","Guaminí","Hipólito Yrigoyen","Hurlingham","Ituzaingó","José C. Paz","Junín","La Costa","La Matanza","La Plata","Lanús","Laprida","Las Flores","Leandro N. Alem","Lincoln","Lobería","Lobos","Lomas de Zamora","Luján","Magdalena","Maipú","Malvinas Argentinas","Mar Chiquita","Marcos Paz","Mercedes","Merlo","Monte","Monte Hermoso","Moreno","Morón","Navarro","Necochea","Olavarría","Patagones","Pehuajó","Pellegrini","Pergamino","Pila","Pilar","Pinamar","Presidente Perón","Puán","Punta Indio","Quilmes","Ramallo","Rauch","Rivadavia","Rojas","Roque Pérez","Saavedra","Saladillo","Salliqueló","Salto","San Andrés de Giles","San Antonio de Areco","San Cayetano","San Fernando","San Isidro","San Miguel","San Nicolás","San Pedro","San Vicente","Suipacha","Tandil","Tapalqué","Tigre","Tordillo","Tornquist","Trenque Lauquen","Tres Arroyos","Tres de Febrero","Tres Lomas","Vicente López","Villarino","Zárate","Otro"],
+    "CABA": ["Agronomía","Almagro","Balvanera","Barracas","Belgrano","Boedo","Caballito","Chacarita","Coghlan","Colegiales","Constitución","Flores","Floresta","La Boca","La Paternal","Liniers","Mataderos","Monte Castro","Montserrat","Nueva Pompeya","Nuñez","Palermo","Parque Avellaneda","Parque Chacabuco","Parque Chas","Parque Patricios","Puerto Madero","Recoleta","Retiro","Saavedra","San Cristóbal","San Nicolás","San Telmo","Vélez Sársfield","Versalles","Villa Crespo","Villa del Parque","Villa Devoto","Villa Gral. Mitre","Villa Lugano","Villa Luro","Villa Ortúzar","Villa Pueyrredón","Villa Real","Villa Riachuelo","Villa Santa Rita","Villa Soldati","Villa Urquiza","Otro"],
+    "Córdoba": ["Alta Gracia","Arroyito","Bell Ville","Capilla del Monte","Carlos Paz","Córdoba Capital","Cosquín","Cruz del Eje","Dean Funes","Embalse","Famailla","Jesús María","La Calera","La Falda","Las Varillas","Luque","Marcos Juárez","Mina Clavero","Morteros","Oncativo","Río Ceballos","Río Cuarto","Río Tercero","San Francisco","Villa Allende","Villa Carlos Paz","Villa del Rosario","Villa Dolores","Villa María","Otro"],
+    "Santa Fe": ["Cañada de Gómez","Casilda","Esperanza","Firmat","Gálvez","Las Rosas","Reconquista","Rafaela","Rosario","San Jorge","Santa Fe Capital","Santo Tomé","Venado Tuerto","Villa Constitución","Otro"],
+    "Mendoza": ["Godoy Cruz","Guaymallén","Las Heras","Lavalle","Luján de Cuyo","Maipú","Mendoza Capital","Rivadavia","San Martín","San Rafael","Tunuyán","Otro"],
+    "Salta": ["Cafayate","Cerrillos","Güemes","Metán","Orán","Rosario de la Frontera","Salta Capital","San José de Metán","Tartagal","Otro"],
+    "Tucumán": ["Aguilares","Alderetes","Banda del Río Salí","Concepción","Monteros","San Miguel de Tucumán","Tafí Viejo","Otro"],
+    "Río Negro": ["Bariloche","Cipolletti","El Bolsón","General Roca","Viedma","Otro"],
+    "Neuquén": ["Cutral Có","Junín de los Andes","Neuquén Capital","San Martín de los Andes","Zapala","Otro"],
+    "Chubut": ["Comodoro Rivadavia","Esquel","Puerto Madryn","Rawson","Trelew","Otro"],
+    "Jujuy": ["La Quiaca","Libertador General San Martín","Palpalá","San Pedro de Jujuy","San Salvador de Jujuy","Otro"],
+    "San Juan": ["Caucete","Chimbas","Pocito","Rawson","Rivadavia","San Juan Capital","Otro"],
+    "Entre Ríos": ["Chajarí","Concordia","Gualeguay","Gualeguaychú","Paraná","Victorica","Villaguay","Otro"]
+};
+
+// ======== UNIVERSITIES BY COUNTRY ========
+const universitiesByCountry = {
+    "Argentina": ["UBA - Universidad de Buenos Aires","UTN - Universidad Tecnológica Nacional","UNLP - Universidad Nacional de La Plata","UNC - Universidad Nacional de Córdoba","UNR - Universidad Nacional de Rosario","UNT - Universidad Nacional de Tucumán","UNMdP - Universidad Nacional de Mar del Plata","UNCU - Universidad Nacional de Cuyo","UNL - Universidad Nacional del Litoral","UNS - Universidad Nacional del Sur","UNCO - Universidad Nacional del Comahue","UNSa - Universidad Nacional de Salta","UNJu - Universidad Nacional de Jujuy","UNCPBA - Universidad Nacional del Centro","USAL - Universidad del Salvador","UADE - Universidad Argentina de la Empresa","UCA - Universidad Católica Argentina","Austral","Palermo","Di Tella","UCES","UADE","UFLO","IES 21","ORT Argentina","Otra"],
+    "Brasil": ["USP - Universidade de São Paulo","UNICAMP","UFRJ - Universidade Federal do Rio de Janeiro","UFMG","UFRGS","UFSC","UNB - Universidade de Brasília","UFPR","UFSCAR","PUC-Rio","PUC-SP","FGV","INSPER","Outra"],
+    "Chile": ["U. de Chile","PUC - Pontificia Universidad Católica","USACH - Universidad de Santiago","UAI - Universidad Adolfo Ibáñez","Andes","Concepción","Valparaíso","Santa María","Católica del Norte","Otra"],
+    "España": ["Universidad Complutense de Madrid","Universidad Autónoma de Madrid","Universidad de Barcelona","Politécnica de Madrid","Politécnica de Cataluña","Universidad de Valencia","Pompeu Fabra","Carlos III","U. de Sevilla","U. de Granada","Otra"],
+    "México": ["UNAM","IPN","ITESM - TEC de Monterrey","UAM","UdeG","BUAP","UANL","Iberoamericana","UDLAP","Otra"],
+    "Colombia": ["U. Nacional","U. de los Andes","U. de Antioquia","U. Javeriana","U. del Rosario","U. del Norte","EAFIT","U. del Valle","Otra"],
+    "Perú": ["PUCP","UNMSM","U. de Lima","UPC","USIL","Otra"],
+    "Estados Unidos": ["MIT","Harvard","Stanford","Caltech","Columbia","Yale","Princeton","UCLA","UC Berkeley","U. of Michigan","NYU","Duke","Otra"],
+    "default": ["Especificar en el campo de texto"]
+};
+
+// ======== INIT DROPDOWNS ========
+function initCountryDropdown() {
+    const sel = document.getElementById('nacionalidad');
+    const codSel = document.getElementById('codPais');
+    countries.forEach(c => {
+        const o1 = document.createElement('option'); o1.value = c.name; o1.textContent = c.name; sel.appendChild(o1);
+        const o2 = document.createElement('option'); o2.value = c.code; o2.textContent = `${c.code} (${c.name})`; codSel.appendChild(o2);
+    });
+    // Add "Otro" option to nationality
+    const oOtro = document.createElement('option'); oOtro.value = 'Otro'; oOtro.setAttribute('data-i18n','opt_otro'); oOtro.textContent = 'Otro'; sel.appendChild(oOtro);
+}
+
+function updateProvincia() {
+    const country = document.getElementById('nacionalidad').value;
+    const provSel = document.getElementById('provincia');
+    const locSel = document.getElementById('localidad');
+    toggleOtro('nacionalidad','nacionalidad_otro');
+
+    provSel.innerHTML = '';
+    locSel.innerHTML = '';
+    locSel.disabled = true;
+
+    if (!country || country === 'Otro') {
+        provSel.disabled = true;
+        const o = document.createElement('option'); o.value = ''; o.textContent = i18n[currentLang].opt_prov || 'Seleccionar país primero'; provSel.appendChild(o);
+        return;
+    }
+    provSel.disabled = false;
+    const hasProv = !!provincesByCountry[country];
+    const provinces = hasProv ? provincesByCountry[country] : ["Otro"];
+    if (!hasProv) {
+        const inp = document.getElementById('provincia_otro');
+        if (inp) { inp.classList.add('visible'); inp.required = true; }
+    }
+    const blank = document.createElement('option'); blank.value = ''; blank.textContent = i18n[currentLang].opt_sel || 'Seleccionar...'; provSel.appendChild(blank);
+    provinces.forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; provSel.appendChild(o); });
+
+    // Load phone code for selected country
+    const match = countries.find(c => c.name === country);
+    if (match) document.getElementById('codPais').value = match.code;
+
+    // Load universities
+    updateUniversidades();
+}
+
+function updateLocalidad() {
+    const prov = document.getElementById('provincia').value;
+    const locSel = document.getElementById('localidad');
+    toggleOtro('provincia','provincia_otro');
+
+    locSel.innerHTML = '';
+    if (!prov || prov === 'Otro') {
+        locSel.disabled = true;
+        const o = document.createElement('option'); o.value = ''; o.textContent = i18n[currentLang].opt_loc || 'Seleccionar provincia primero'; locSel.appendChild(o);
+        return;
+    }
+    locSel.disabled = false;
+    const localities = localitiesByProvince[prov] || ["(Sin datos - especificar)", "Otro"];
+    const blank = document.createElement('option'); blank.value = ''; blank.textContent = i18n[currentLang].opt_sel || 'Seleccionar...'; locSel.appendChild(blank);
+    localities.forEach(l => { const o = document.createElement('option'); o.value = l; o.textContent = l; locSel.appendChild(o); });
+    locSel.onchange = () => toggleOtro('localidad','localidad_otro');
+}
+
+function updateUniversidades() {
+    const country = document.getElementById('nacionalidad').value;
+    const nivel = document.getElementById('estudios').value;
+    const uniSel = document.getElementById('universidad');
+    uniSel.innerHTML = '';
+
+    const needsUni = ['Terciario','Universitario','Posgrado','Maestría','Doctorado'];
+    if (!nivel || !needsUni.includes(nivel) || !country || country === 'Otro') {
+        uniSel.disabled = true;
+        const o = document.createElement('option'); o.value = ''; o.textContent = i18n[currentLang].opt_univ_sel || 'Seleccionar estudios primero'; uniSel.appendChild(o);
+        return;
+    }
+    uniSel.disabled = false;
+    const unis = universitiesByCountry[country] || universitiesByCountry['default'];
+    const blank = document.createElement('option'); blank.value = ''; blank.textContent = i18n[currentLang].opt_sel || 'Seleccionar...'; uniSel.appendChild(blank);
+    unis.forEach(u => { const o = document.createElement('option'); o.value = u; o.textContent = u; uniSel.appendChild(o); });
+    const oOtro = document.createElement('option'); oOtro.value = 'Otro'; oOtro.textContent = 'Otra / Otro'; uniSel.appendChild(oOtro);
+}
+
+// ======== OTRO TOGGLE ========
+function toggleOtro(selectId, inputId) {
+    const sel = document.getElementById(selectId);
+    const inp = document.getElementById(inputId);
+    if (!inp) return;
+    if (sel.value === 'Otro' || sel.value === '(Sin datos - especificar)') {
+        inp.classList.add('visible'); inp.required = true;
+    } else {
+        inp.classList.remove('visible'); inp.required = false; inp.value = '';
+    }
+}
+
+document.getElementById('sexo').addEventListener('change', () => toggleOtro('sexo','sexo_otro'));
+document.getElementById('areaInteres').addEventListener('change', () => toggleOtro('areaInteres','areaInteres_otro'));
+document.getElementById('universidad').addEventListener('change', () => toggleOtro('universidad','universidad_otro'));
+document.getElementById('estudios').addEventListener('change', () => { toggleOtro('estudios','estudios_otro'); updateUniversidades(); });
+document.getElementById('estadoEstudios').addEventListener('change', () => toggleOtro('estadoEstudios','estadoEstudios_otro'));
+document.getElementById('localidad').addEventListener('change', () => toggleOtro('localidad','localidad_otro'));
+
+// ======== FORM SUBMIT ========
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw9-st0e1dqH0VQ3mMzjBIb-HSKwWhxEaFKU0PRRzuBz0BWgiaKYLnPJrvqs4_TlohLbw/exec";
+
+document.getElementById('cvForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const submitBtn = document.getElementById('submitBtn');
+    const loadingMsg = document.getElementById('loadingMsg');
+    submitBtn.disabled = true;
+    loadingMsg.style.display = 'block';
+
+    const fileInput = document.getElementById('cvFile');
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(ev) {
+        const bytes = ev.target.result.split(',')[1];
+        const data = {
+            nombre: document.getElementById('nombre').value,
+            dni: document.getElementById('dni').value,
+            fechaNacimiento: document.getElementById('fechaNacimiento').value,
+            sexo: document.getElementById('sexo').value === 'Otro' ? document.getElementById('sexo_otro').value : document.getElementById('sexo').value,
+            nacionalidad: document.getElementById('nacionalidad').value === 'Otro' ? document.getElementById('nacionalidad_otro').value : document.getElementById('nacionalidad').value,
+            telefono: document.getElementById('codPais').value + " " + document.getElementById('numTel').value,
+            mail: document.getElementById('mail').value,
+            provincia: document.getElementById('provincia').value === 'Otro' ? document.getElementById('provincia_otro').value : document.getElementById('provincia').value,
+            localidad: document.getElementById('localidad').value === 'Otro' ? document.getElementById('localidad_otro').value : document.getElementById('localidad').value,
+            cp: document.getElementById('cp').value,
+            estudios: document.getElementById('estudios').value === 'Otro' ? document.getElementById('estudios_otro').value : document.getElementById('estudios').value,
+            estadoEstudios: document.getElementById('estadoEstudios').value === 'Otro' ? document.getElementById('estadoEstudios_otro').value : document.getElementById('estadoEstudios').value,
+            universidad: document.getElementById('universidad').value === 'Otro' ? document.getElementById('universidad_otro').value : document.getElementById('universidad').value,
+            experiencia: document.getElementById('experiencia').value,
+            idiomas: document.getElementById('idiomas').value,
+            areaInteres: document.getElementById('areaInteres').value === 'Otro' ? document.getElementById('areaInteres_otro').value : document.getElementById('areaInteres').value,
+            linkedin: document.getElementById('linkedin').value,
+            sobreMi: document.getElementById('sobreMi').value,
+            carrera: (document.getElementById('carreraDetalle') && document.getElementById('carreraDetalle').value && document.getElementById('carreraDetalle').value !== 'Otro') ? document.getElementById('carreraDetalle').value : document.getElementById('carrera_otro').value,
+            ayudaCv: document.getElementById('ayudaCv').checked ? "SÍ" : "NO",
+            cvData: bytes, cvName: file.name, cvType: file.type
+        };
+
+        fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(data) })
+        .then(res => res.json())
+        .then(() => { alert(i18n[currentLang].success_msg); document.getElementById('cvForm').reset(); updateProvincia(); })
+        .catch(err => { alert(i18n[currentLang].error_msg); console.error(err); })
+        .finally(() => { submitBtn.disabled = false; loadingMsg.style.display = 'none'; });
+    };
+    reader.readAsDataURL(file);
+});
+
+// ======== MULTI-STEP FORM ========
+function goStep(n) {
+    // Validate current step before proceeding forward
+    const current = document.querySelector('.form-step.active');
+    const currentNum = parseInt(current.id.replace('step-',''));
+    if (n > currentNum) {
+        const required = current.querySelectorAll('[required]');
+        for (let el of required) {
+            if (!el.value.trim() && el.style.display !== 'none' && !el.closest('.otro-input:not(.visible)')) {
+                el.focus();
+                el.reportValidity();
+                return;
+            }
+        }
+    }
+    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + n).classList.add('active');
+
+    // Update progress indicators
+    for (let i = 1; i <= 3; i++) {
+        const pi = document.getElementById('pi-' + i);
+        pi.classList.remove('active','done');
+        if (i < n) pi.classList.add('done');
+        else if (i === n) pi.classList.add('active');
+    }
+    document.querySelector('.form-container').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ======== DRAG & DROP ========
+const dropzone = document.getElementById('dropzone');
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+dropzone.addEventListener('drop', e => {
+    e.preventDefault(); dropzone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+        const dt = new DataTransfer(); dt.items.add(file);
+        document.getElementById('cvFile').files = dt.files;
+        showFilename(file.name, file.size);
+    }
+});
+
+function handleFileSelect(input) {
+    const file = input.files[0];
+    if (file) showFilename(file.name, file.size);
+}
+
+function showFilename(name, size) {
+    const maxSize = 5 * 1024 * 1024;
+    if (size > maxSize) {
+        alert('El archivo supera el tamaño máximo de 5 MB. Por favor seleccioná un archivo más pequeño.');
+        document.getElementById('cvFile').value = '';
+        return;
+    }
+    const fn = document.getElementById('dzFilename');
+    fn.textContent = '✅ ' + name;
+    fn.style.display = 'block';
+}
+
+// ======== DARK/LIGHT MODE TOGGLE ========
+function toggleTheme() {
+    const body = document.body;
+    const btn = document.getElementById('themeBtn');
+    body.classList.toggle('light-mode');
+    btn.textContent = body.classList.contains('light-mode') ? '🌙' : '☀️';
+}
+
+// ======== MODAL T&C ========
+function openModal(e) { e.preventDefault(); document.getElementById('tcModal').classList.add('open'); }
+function closeModal() { document.getElementById('tcModal').classList.remove('open'); }
+document.getElementById('tcModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+// ======== CARRERA DINÁMICA ========
+const carrerasPorCategoria = {
+    tech: ["Ingeniería en Sistemas de Información / Informática","Licenciatura en Ciencias de la Computación","Licenciatura en Sistemas / Tecnología de la Información","Ingeniería Electrónica / Eléctrica","Ingeniería Industrial","Ingeniería Civil / Mecánica","Tecnicatura Superior en Programación / Desarrollo de Software","Tecnicatura en Inteligencia Artificial y Ciencia de Datos","Otro"],
+    eco: ["Contador Público","Licenciatura en Administración de Empresas","Licenciatura en Economía","Abogacía","Licenciatura en Comercialización / Marketing","Licenciatura en Comercio Internacional / Exterior","Licenciatura en Recursos Humanos / Relaciones del Trabajo","Licenciatura en Finanzas","Otro"],
+    salud: ["Medicina","Licenciatura en Enfermería","Licenciatura en Kinesiología y Fisiatría","Farmacia y Bioquímica","Licenciatura en Nutrición","Odontología","Licenciatura en Psicología","Licenciatura en Ciencias Biológicas / Biotecnología","Otro"],
+    diseno: ["Arquitectura","Licenciatura en Diseño Gráfico / Comunicación Visual","Licenciatura en Diseño UX/UI / Multimedia","Licenciatura en Comunicación Social / Periodismo","Licenciatura en Relaciones Públicas e Institucionales","Diseño de Indumentaria y Textil","Otro"],
+    social: ["Licenciatura en Ciencia Política / Relaciones Internacionales","Licenciatura en Sociología","Licenciatura en Ciencias de la Educación / Pedagogía","Traductorado Público (Inglés, Portugués, etc.)","Licenciatura en Trabajo Social","Otro"]
+};
+
+function updateCarreraOpciones() {
+    const cat = document.getElementById('carreraCategoria').value;
+    const detSel = document.getElementById('carreraDetalle');
+    if (!cat || cat === 'otra') {
+        detSel.style.display = 'none';
+        document.getElementById('carrera_otro').classList.add('visible');
+        document.getElementById('carrera_otro').required = true;
+        return;
+    }
+    document.getElementById('carrera_otro').classList.remove('visible');
+    document.getElementById('carrera_otro').required = false;
+    detSel.innerHTML = '<option value="">Seleccionar carrera...</option>';
+    carrerasPorCategoria[cat].forEach(c => {
+        const o = document.createElement('option'); o.value = c; o.textContent = c; detSel.appendChild(o);
+    });
+    detSel.style.display = 'block';
+}
+
+// Show/hide carrera group based on education level
+const estudiosOriginalChange = document.getElementById('estudios').onchange;
+document.getElementById('estudios').addEventListener('change', function() {
+    const nivel = this.value;
+    const needsCarrera = ['Terciario','Universitario','Posgrado','Maestría','Doctorado'];
+    const cg = document.getElementById('carreraGroup');
+    cg.style.display = needsCarrera.includes(nivel) ? 'flex' : 'none';
+    if (!needsCarrera.includes(nivel)) {
+        document.getElementById('carreraCategoria').value = '';
+        document.getElementById('carreraDetalle').style.display = 'none';
+    }
+});
+
+// ======== UPDATE FORM SUBMIT to include carrera & terms ========
+// Patch: include carrera in submitted data
+const originalSubmit = document.getElementById('cvForm').onsubmit;
+document.getElementById('cvForm').addEventListener('submit', function(e) {
+    // terms checkbox validation
+    if (!document.getElementById('aceptoTerminos').checked) {
+        alert('Debés aceptar los Términos y Condiciones para continuar.');
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        return;
+    }
+}, true); // capture phase so it runs before existing listener
+
+// ======== BOOT ========
+initCountryDropdown();
+</script>
+</body>
+</html>
